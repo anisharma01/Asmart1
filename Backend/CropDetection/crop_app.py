@@ -1,35 +1,33 @@
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 import joblib
-import sys
-import json
+import numpy as np
 import os
+import traceback
 
-# Get the current directory of this script
-current_dir = os.path.dirname(os.path.abspath(__file__))
-# Specify the absolute path to crop_app.joblib
-model_path = os.path.join(current_dir, 'crop_app.joblib')
+app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 
-def predict(Nitrogen, Phosphorus, Potassium, Temperature, Humidity, Ph, Rainfall):
-    values = [Nitrogen, Phosphorus, Potassium, Temperature, Humidity, Ph, Rainfall]
-    
-    if 0 < Ph <= 14 and Temperature < 100 and Humidity > 0:
-        model = joblib.load(model_path)
-        arr = [values]
-        acc = model.predict(arr)
-        return json.dumps({"prediction": str(acc[0])})
-    else:
-        return json.dumps({"error": "Invalid input values. Please check the values and fill it again."})
+# Construct the path to the model file
+current_directory = os.path.dirname(__file__)
+model_path = os.path.join(current_directory, 'crop_app.joblib')
 
-if __name__ == "__main__":
+# Load the trained model
+model = joblib.load(model_path)
+
+@app.route('/predict', methods=['POST'])
+def predict():
     try:
-        Nitrogen = float(sys.argv[1])
-        Phosphorus = float(sys.argv[2])
-        Potassium = float(sys.argv[3])
-        Temperature = float(sys.argv[4])
-        Humidity = float(sys.argv[5])
-        Ph = float(sys.argv[6])
-        Rainfall = float(sys.argv[7])
-        
-        result = predict(Nitrogen, Phosphorus, Potassium, Temperature, Humidity, Ph, Rainfall)
-        print(result)
+        data = request.json
+        features = np.array([[data['Nitrogen'], data['Phosphorus'], data['Potassium'],
+                              data['Temperature'], data['Humidity'], data['ph'], data['Rainfall']]])
+        prediction = model.predict(features)
+        return jsonify({'prediction': prediction.tolist()})
     except Exception as e:
-        print(json.dumps({"error": str(e)}))
+        # Log the error stack trace
+        error_message = str(e)
+        traceback.print_exc()
+        return jsonify({'error': error_message})
+
+if __name__ == '__main__':
+    app.run(debug=True)

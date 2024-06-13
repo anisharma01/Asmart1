@@ -28,33 +28,17 @@ const CropDetection = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const formattedFormData = {
-      Nitrogen: formData.Nitrogen,
-      Phosphorus: formData.Phosphorus,
-      Potassium: formData.Potassium,
-      Temperature: formData.Temperature,
-      Humidity: formData.Humidity,
-      ph: formData.ph,
-      Rainfall: formData.Rainfall,
-    };
+    setError('');
+    setPrediction('');
+    console.log(formData)
     try {
-      const res = await axios.post('http://localhost:3737/predict', formattedFormData);
-      if (res.status === 200) {
-        if (res.data.prediction) {
-          setPrediction(res.data.prediction);
-          setError('');
-        } else if (res.data.error) {
-          setError(res.data.error);
-          setPrediction('');
-        }
-      } else {
-        setError('Error predicting crop. Please try again.');
-      }
+      const response = await axios.post('http://localhost:5000/predict', formData);
+      setPrediction(response.data.prediction);
     } catch (err) {
-      console.error('Error predicting crop:', err);
-      setError('Error predicting crop. Please try again.');
+      setError('Error making prediction');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
