@@ -32,7 +32,7 @@ const CropDetection = () => {
     setPrediction('');
     console.log(formData)
     try {
-      const response = await axios.post('http://localhost:5000/predict', formData);
+      const response = await axios.post('https://cropdetection-anish-sharmas-projects-b3f4d6ec.vercel.app/predict', formData);
       setPrediction(response.data.prediction);
     } catch (err) {
       setError('Error making prediction');
