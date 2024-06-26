@@ -2,10 +2,13 @@
     "version": 2,
     "builds": [
         {
-            "src": "./cropapp.py",
-            "use": "@vercel/python"
+        "src": "Backend/CropDetection/index.py",
+        "use": "@vercel/python",
+        "config": { "runtime": "python3.12" }
         }
     ],
+
+      
     "routes": [
         {
             "src": "/(.*)",
