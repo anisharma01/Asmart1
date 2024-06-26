@@ -3,7 +3,10 @@
     "builds": [
         {
             "src": "./cropapp.py",
-            "use": "@vercel/python3.12"
+            "use": "@vercel/python",
+            "config": {
+                "runtime": "python3.12"
+            }
         }
     ],
     "routes": [
