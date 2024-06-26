@@ -4,7 +4,6 @@
         {
             "src": "./cropapp.py",
             "use": "@vercel/python",
-            "runtime": "python3.12"
         }
     ],
     "routes": [
