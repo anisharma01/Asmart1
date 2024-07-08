@@ -30,12 +30,15 @@ const CropDetection = () => {
     setLoading(true);
     setError('');
     setPrediction('');
-    console.log(formData)
+
     try {
-      const response = await axios.post('https://cropdetection-anish-sharmas-projects-b3f4d6ec.vercel.app/predict', formData);
+      const response = await axios.post('http://localhost:5000/predict', formData);
+      console.log('response: ', response);
+      console.log('response.data: ', response.data);
+      console.log('response.data.pediction: ', response.data.prediction);
       setPrediction(response.data.prediction);
-    } catch (err) {
-      setError('Error making prediction');
+    } catch (error) {
+      setError('An error occurred while making the prediction. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -48,7 +51,6 @@ const CropDetection = () => {
         <form onSubmit={handleSubmit} className='crop-detection-form'>
           <div className='form-text1'>Fill the Details:</div>
           <div className="detail-form">
-            {/* Input fields */}
             <div className="detail-box">
               <label htmlFor="Nitrogen">Nitrogen:</label>
               <input
@@ -145,14 +147,13 @@ const CropDetection = () => {
           <input type="submit" id="submit" name="submit" value="RECOMMEND" className='prediction-btn' />
           <div className='form-text2'>Learn more about <a href='https://www.manage.gov.in/publications/farmerbook.pdf'>Harvesting</a></div>
         </form >
-        {/* Display prediction or error message */}
         <div className="prediction-output">
           <h1>Crop Recommended</h1>
           {loading ? (
             <LinearProgress />
           ) : (
             <>
-              {prediction && <h4 className='prediction-output-text'>The best crops for this season are: <br /><br /><h3 style={{fontStyle: 'italic'}}>{prediction}</h3></h4>}
+              {prediction && <span className='prediction-output-text'>The best crops for this season are: <br /><br /><h3 style={{fontStyle: 'italic'}}>{prediction}</h3></span>}
               {error && <p className="error">{error}</p>}
             </>
           )}
