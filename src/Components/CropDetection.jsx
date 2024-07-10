@@ -32,7 +32,7 @@ const CropDetection = () => {
     setPrediction('');
 
     try {
-      const response = await axios.post('http://localhost:5000/predict', formData);
+      const response = await axios.post('https://anishkibkchodi.onrender.com/predict', formData);
       console.log('response: ', response);
       console.log('response.data: ', response.data);
       console.log('response.data.pediction: ', response.data.prediction);
